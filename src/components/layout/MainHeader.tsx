@@ -1,5 +1,63 @@
+import styled from "styled-components";
+import { Link } from "react-router";
+import { IoMdChatbubbles } from "react-icons/io";
+import Button from "../common/button/Button.tsx";
+import { IoMoon } from "react-icons/io5";
+
+const HeaderContainer = styled.header`
+    width: 100%;
+    height: 64px;
+    background-color: ${props => props.theme.color.background.paper};
+    border-bottom: 1px solid ${props => props.theme.color.divider};
+`;
+
+const HeaderInner = styled.div`
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    height: 64px;
+`;
+
+const Logo = styled(Link)`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 24px;
+    font-weight: 800;
+    color: ${props => props.theme.color.primary};
+`;
+
+const NavGroup = styled.nav`
+    display: flex;
+    align-items: center;
+    gap: 16px;
+`;
+
 function MainHeader() {
-    return <></>
+    return (
+        <HeaderContainer>
+            <HeaderInner>
+                <Logo to={"/"}>
+                    <IoMdChatbubbles size={28} />
+                    토론대난투
+                </Logo>
+                <NavGroup>
+                    <Button color={"secondary"} variant={"icon"}>
+                        <IoMoon size={20} />
+                    </Button>
+                    <Button as={Link} to={"auth/signin"} color={"success"} variant={"text"}>
+                        로그인
+                    </Button>
+                    <Button as={Link} to={"auth/signup"} color={"primary"} variant={"contained"}>
+                        회원가입
+                    </Button>
+                </NavGroup>
+            </HeaderInner>
+        </HeaderContainer>
+    );
 }
 
 export default MainHeader;
