@@ -5,6 +5,7 @@ import { createUserSchema } from "../../../schemas/auth/signUpSchema.ts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GenderType } from "../../../types/user.type.ts";
 import SelectGroup, { type OptionType } from "../../../components/common/select/SelectGroup.tsx";
+import Button from "../../../components/common/button/Button.tsx";
 
 const AuthContainer = styled.div`
     display: flex;
@@ -39,6 +40,14 @@ const AuthSubtitle = styled.h6`
     margin-bottom: 32px;
 `;
 
+const AuthRootErrorMessage = styled.p`
+    font-size: 14px;
+    text-align: center;
+    color: ${props => props.theme.color.error};
+    font-weight: 500;
+    margin-bottom: 50px;
+`;
+
 type SignUpInput = {
     username: string;
     password: string;
@@ -53,7 +62,8 @@ function SignUpPage() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        setError,
+        formState: { errors, isSubmitting },
     } = useForm<SignUpInput>({
         resolver: zodResolver(createUserSchema), // react-hook-form과 zod 연결
         mode: "onBlur", // 언제 검증할 것인가를 정하는 옵션
@@ -105,6 +115,7 @@ function SignUpPage() {
                     registerObj={register("email")}
                     errorMessage={errors.email?.message}
                     type={"email"}
+                    placeholder={"example@example.com"}
                 />
                 <InputGroup
                     label={"전화번호"}
@@ -112,13 +123,23 @@ function SignUpPage() {
                     registerObj={register("phoneNumber")}
                     errorMessage={errors.phoneNumber?.message}
                     type={"tel"}
+                    placeholder={"010-xxxx-xxxx"}
                 />
                 <SelectGroup
                     label={"성별"}
                     id={"gender"}
                     errorMessage={errors.gender?.message}
                     registerObj={register("gender")}
-                    options={options}></SelectGroup>
+                    options={options}
+                />
+                {errors.root && <AuthRootErrorMessage>{errors.root.message}</AuthRootErrorMessage>}
+                <Button
+                    color={"primary"}
+                    variant={"contained"}
+                    type={"submit"}
+                    disabled={isSubmitting}>
+                    회원가입
+                </Button>
             </AuthFormCard>
         </AuthContainer>
     );
