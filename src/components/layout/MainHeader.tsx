@@ -46,7 +46,7 @@ function MainHeader() {
                 </Logo>
                 <NavGroup>
                     <Button color={"secondary"} variant={"icon"}>
-                        <IoMoon size={20} />
+                        <IoMoon size={27} />
                     </Button>
                     <Button as={Link} to={"auth/signin"} color={"success"} variant={"text"}>
                         로그인
