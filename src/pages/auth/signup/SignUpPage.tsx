@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { GenderType } from "../../../types/user.type.ts";
 import SelectGroup, { type OptionType } from "../../../components/common/select/SelectGroup.tsx";
 import Button from "../../../components/common/button/Button.tsx";
+import {useNavigate} from "react-router";
 
 const AuthContainer = styled.div`
     display: flex;
@@ -59,6 +60,13 @@ type SignUpInput = {
 };
 
 function SignUpPage() {
+    const navigate = useNavigate();
+
+    // register : input에 react-hook-form의 기능들을 등록할 때 사용할 수 있는 기능
+    // handleSubmit : 전송할 때 사용할 수 있는 기능 (검증 후 전송하는 기능을 제공)
+    // setError : 에러 메세지 내용을 우리가 수동으로 입력하고 싶을 때 사용
+    // formState 중 errors : 에러 메세지 자체를 저장하고 있는 저장소 => root, 우리가 제공한 항목들
+    //           중 inSubmitting : 전송 중임을 표현하는 boolean 변수 (전송 중은 true, 아닐 땐 false)
     const {
         register,
         handleSubmit,
@@ -66,7 +74,7 @@ function SignUpPage() {
         formState: { errors, isSubmitting },
     } = useForm<SignUpInput>({
         resolver: zodResolver(createUserSchema), // react-hook-form과 zod 연결
-        mode: "onBlur", // 언제 검증할 것인가를 정하는 옵션
+        mode: "onBlur", // 언제 검증할 것인가를 정하는 옵션(온블러는 벗어날 때 적용)
     });
 
     const options: OptionType[] = [
@@ -74,12 +82,44 @@ function SignUpPage() {
         { text: "여자", value: GenderType.FEMALE },
     ];
 
+    const onSubmit = async (input: SignUpInput) => {
+        // 입력된 정보(input)을 가지고 백엔드에게 요청
+        // 앞으로 fetch를 사용하지 않을 것 => axios 패키지를 이용할 것
+        try {
+            // 전송에 대한 내용을 기재하면 되는데, 그대로 데이터를 전달할 것인가?
+            // 프론트엔드에서'만' 필요한 confirmPassword 항목이 있으니, 이것을 제외하고 전송
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { confirmPassword, ...submitData } = input;
+
+
+            // 사용자가 적은 내용을 함께 fetch를 통해 보내줘야 함 => 사용자가 적은 내용은 HTTP 메세지 중 body
+            // fetch(주소, 옵션) => 주소는 필수값, 옵션은 선택값
+            // 옵션 자리에는 객체 { method, header, body }
+            const response = await fetch("http://localhost:8000/user/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(submitData),    // 객체를 그대로 body에 담아서 보낼 수 없고, JSON.stringify()를 통해 JSON 형식의 string으로 변환
+            });
+
+            // 백엔드에서 보냊분 응답(string)을 JSON으로 파싱함
+            const result = await response.json();
+
+            alert("회원가입이 완료되었습니다. 로그인을 진행해주세요.");
+            navigate("/auth/signin");
+
+        } catch (err) {
+            setError("root", { message: "회원가입이 실패했습니다. 다시 시도해주세요." });
+        }
+    };
+
     return (
         <AuthContainer>
-            <AuthFormCard>
+            <AuthFormCard onSubmit={handleSubmit(onSubmit)}>
                 <AuthTitle>회원가입</AuthTitle>
                 <AuthSubtitle>토론대난투에 오신 것을 환영합니다!</AuthSubtitle>
-                <InputGroup
+                <InputGroup // 필수값과 선택값을 잘 선택하여 있으면 출력, 없으면 출력지 않게 설계하기
                     label={"아이디"}
                     id={"username"}
                     registerObj={register("username")}
@@ -132,7 +172,10 @@ function SignUpPage() {
                     registerObj={register("gender")}
                     options={options}
                 />
+
+                {/**/}
                 {errors.root && <AuthRootErrorMessage>{errors.root.message}</AuthRootErrorMessage>}
+
                 <Button
                     color={"primary"}
                     variant={"contained"}

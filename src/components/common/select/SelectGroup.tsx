@@ -1,4 +1,4 @@
-import type { SelectHTMLAttributes } from "react";
+import type { ReactNode, SelectHTMLAttributes } from "react";
 import { ErrorMessage, Group, Label } from "../group/Group.tsx";
 import type { UseFormRegisterReturn } from "react-hook-form";
 import Select from "./Select.tsx";
@@ -13,9 +13,9 @@ interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
     label?: string;
     errorMessage?: string;
     id?: string;
-    registerObj?: UseFormRegisterReturn;
-    children1?: string;
-    options: OptionType[];
+    registerObj?: UseFormRegisterReturn;    // 프로퍼티 타입은 규칙
+    options: OptionType[]; // 기본 코드를 써서 커서를 올리면 해당 배열의 값을 가져야 한다고 알 수 있고, 또 다시 누르면 안의 프로퍼티를 알 수 있음
+    children?: ReactNode;                   // 프로퍼티 22
 }
 
 function SelectGroup({ label, errorMessage, id, registerObj, options, ...x }: Props) {

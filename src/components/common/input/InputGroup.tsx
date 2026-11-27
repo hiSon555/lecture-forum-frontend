@@ -5,7 +5,7 @@ import { ErrorMessage, Label, Group } from "../group/Group.tsx";
 
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
-    label?: string;
+    label?: string;             // ? 있을 수도 없을 수도: 이게 ~있다면
     errorMessage?: string;
     id?: string;
     registerObj?: UseFormRegisterReturn;
@@ -14,9 +14,9 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
 function InputGroup({ label, errorMessage, registerObj, id, ...x }: Props) {
     return (
         <Group>
-            {label && <Label htmlFor={id}>{label}</Label>}
+            {label && <Label htmlFor={id}>{label}</Label>}  {/* 논리곱 = and | 라벨이 있다면 라벨의 입력창과 문구 출력케함*/}
             <Input id={id} $errorMessage={errorMessage} {...registerObj} {...x} />
-            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>} {/* 논리곱22 */}
         </Group>
     );
 }
