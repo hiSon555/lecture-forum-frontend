@@ -9,47 +9,15 @@ import Button from "../../../components/common/button/Button.tsx";
 import {useNavigate} from "react-router";
 import axiosInstance from "../../../api/axiosInstance.ts";
 import * as axios from "axios";
+import {
+    AuthContainer,
+    AuthFormCard,
+    AuthRootErrorMessage,
+    AuthSubtitle,
+    AuthTitle,
+} from "../../../styles/AuthStyles.tsx";
 
-const AuthContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
 
-const AuthFormCard = styled.form`
-    width: 100%;
-    max-width: 480px;
-    background-color: ${props => props.theme.color.background.paper};
-    border: 1px solid ${props => props.theme.color.divider};
-    border-radius: 8px;
-    padding: 40px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-`;
-
-const AuthTitle = styled.h1`
-    font-size: 28px;
-    font-weight: 800;
-    color: ${props => props.theme.color.primary};
-    margin-bottom: -15px;
-    text-align: center;
-`;
-
-const AuthSubtitle = styled.h6`
-    font-size: 15px;
-    color: ${props => props.theme.color.text.disabled};
-    text-align: center;
-    margin-bottom: 32px;
-`;
-
-const AuthRootErrorMessage = styled.p`
-    font-size: 14px;
-    text-align: center;
-    color: ${props => props.theme.color.error};
-    font-weight: 500;
-    margin-bottom: 50px;
-`;
 
 type SignUpInput = {
     username: string;
@@ -76,7 +44,7 @@ function SignUpPage() {
         formState: { errors, isSubmitting },
     } = useForm<SignUpInput>({
         resolver: zodResolver(createUserSchema), // react-hook-form과 zod 연결
-        mode: "onBlur", // 언제 검증할 것인가를 정하는 옵션(온블러는 벗어날 때 적용)
+        mode: "onBlur", // 언제 검증할 것인가를 정하는 옵션 (온블러는 벗어날 때 적용)
     });
 
     const options: OptionType[] = [
